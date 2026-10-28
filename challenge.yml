@@ -1,0 +1,24 @@
+name: "Fidel Telegram"
+author: "AdwaCTF"
+category: crypto
+description: |-
+  February 1896. A runner from Ras Alula reaches the Imperial Post at Adwa with a
+  telegram written entirely in fidel, but nobody at the post knows the key.
+
+  Every telegram of the Imperial Post starts with the word `TELEGRAM`.
+
+  Flag format: `AdwaCTF{...}`
+value: 100
+type: standard
+flags:
+  - AdwaCTF{FIDEL_ROWS_AND_ORDERS_CANT_HIDE_FROM_FREQUENCY}
+tags:
+  - easy
+  - classical
+files:
+  - dist/message.txt
+hints:
+  - content: "Each fidel character is a (consonant row, vowel order) pair. The two halves are encrypted independently."
+    cost: 10
+state: visible
+version: "0.1"
