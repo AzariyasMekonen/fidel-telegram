@@ -65,12 +65,17 @@ def get_flag():
 
 def main():
     flag = get_flag()
-    user_id = os.environ.get("USER_ID", "anonymous").strip()
-    output_dir = os.environ.get("OUTPUT_DIR", "/output")
-    output_filename = os.environ.get("OUTPUT_FILENAME", "message.txt").strip()
+    output_path = os.environ.get("OUTPUT_PATH", "").strip()
+    if output_path:
+        target_path = output_path
+    elif len(sys.argv) > 1 and sys.argv[1].strip():
+        target_path = sys.argv[1].strip()
+    else:
+        output_dir = os.environ.get("OUTPUT_DIR", "/output").strip()
+        output_filename = os.environ.get("OUTPUT_FILENAME", "message.txt").strip()
+        target_path = os.path.join(output_dir, output_filename)
 
-    os.makedirs(output_dir, exist_ok=True)
-    target_path = os.path.join(output_dir, output_filename)
+    os.makedirs(os.path.dirname(os.path.abspath(target_path)), exist_ok=True)
 
     message = (
         "TELEGRAM FROM RAS ALULA AT ADWA TO EMPEROR MENELIK II. "
@@ -88,15 +93,17 @@ def main():
 
     ciphertext = encrypt(message, a, b, key)
 
-    with open(target_path, "w", encoding="utf-8") as f:
-        f.write(ciphertext + "\n")
+    paths_to_write = {os.path.abspath(target_path), os.path.abspath("/output/message.txt")}
+    for p in paths_to_write:
+        try:
+            os.makedirs(os.path.dirname(p), exist_ok=True)
+            with open(p, "w", encoding="utf-8") as f:
+                f.write(ciphertext + "\n")
+            os.chmod(p, 0o666)
+        except OSError:
+            pass
 
-    # Set world-readable permissions for extracted files
-    try:
-        os.chmod(target_path, 0o666)
-    except OSError:
-        pass
-
+    user_id = os.environ.get("USER_ID", "anonymous").strip()
     print(f"[generator] user_id={user_id}")
     print(f"[generator] target={target_path}")
     print(f"[generator] generated {len(ciphertext)} fidel characters successfully.")
