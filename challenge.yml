@@ -9,14 +9,21 @@ description: |-
 
   Flag format: `AdwaCTF{...}`
 value: 100
-type: standard
+type: dynamic
 flags:
   - AdwaCTF{FIDEL_ROWS_AND_ORDERS_CANT_HIDE_FROM_FREQUENCY}
 tags:
   - easy
   - classical
+  - dynamic-flag
 files:
   - dist/message.txt
+generator:
+  enabled: true
+  image: "ghcr.io/azariyasmekonen/fidel-telegram:latest"
+  output_filename: "message.txt"
+  timeout: 30
+  cache_ttl: 72
 hints:
   - content: "Each fidel character is a (consonant row, vowel order) pair. The two halves are encrypted independently."
     cost: 10
